@@ -25,11 +25,7 @@ jobs:
           remove-haskell: 'true'
           remove-codeql: 'true'
 
-          
     - uses: actions/checkout@v3
-      with:
-          path: KernelSU
-          fetch-depth: 0
     - name: 工作配置
       run: |
         echo "LXC_DOCKER=$(cat config.env | grep -w "LXC_DOCKER" | head -n 1 | cut -d "=" -f 2)" >> $GITHUB_ENV
@@ -169,7 +165,7 @@ jobs:
       if: env.LXC_PATCH == 'true'
       run: |
        cd $GITHUB_WORKSPACE/kernel_workspace
-       wget https://github.com/fate-think/LXC-DOCKER-KernelSU_Action/releases/download/1.0.0/runcpatch.sh
+       wget https://github.com/yuweiyuan8/LXC-DOCKER-KernelSU_Action/releases/download/New/runcpatch.sh
        chmod a+x runcpatch.sh
        if [ -f android-kernel/kernel/cgroup.c ]; then
        ./runcpatch.sh android-kernel/kernel/cgroup.c               
@@ -180,8 +176,7 @@ jobs:
        fi
        
        if [ -f android-kernel/net/netfilter/xt_qtaguid.c ]; then
-         wget https://github.com/wu17481748/lxc-docker/releases/download/lxc/lxc.patch
-         patch -p0 < lxc.patch
+         wget https://github.com/yuweiyuan8/LXC-DOCKER-KernelSU_Action/releases/download/download/xt_qtaguid.patch
        fi
 
     - name: 关闭ANDROID_PARANOID_NETWORK配置
@@ -197,7 +192,6 @@ jobs:
       if: env.ENABLE_KERNELSU == 'true'
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
-        rm -rf KernelSU
         curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s ${{ env.KERNELSU_TAG }}
         echo "UPLOADNAME=-KernelSU" >> $GITHUB_ENV
 
