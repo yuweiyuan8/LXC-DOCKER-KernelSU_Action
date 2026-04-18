@@ -315,7 +315,9 @@ jobs:
             -e PERF_HELPER \
             -e BOOTUP_RECLAIM \
             -e MI_RECLAIM \
-            -e RTMM 
+            -e RTMM \
+            -e DEVTMPFS
+            
         
         if [ ${{ env.ENABLE_CCACHE }} = true ]; then
             make -j$(nproc --all) CC="ccache clang" O=out ARCH=${{ env.ARCH }} ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }} ${{ env.GCC_64 }} ${{ env.GCC_32 }}
