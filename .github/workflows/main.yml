@@ -316,7 +316,8 @@ jobs:
             -e BOOTUP_RECLAIM \
             -e MI_RECLAIM \
             -e RTMM \
-            -e DEVTMPFS
+            -e DEVTMPFS \
+            -e BINFMT_MISC
             
         
         if [ ${{ env.ENABLE_CCACHE }} = true ]; then
