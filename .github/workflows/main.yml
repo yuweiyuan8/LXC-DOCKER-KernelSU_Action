@@ -216,11 +216,11 @@ jobs:
         max-size: 2G
 
     - name: 开始编译内核
-  run: |
-    cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
-    export PATH=$GITHUB_WORKSPACE/kernel_workspace/clang-aosp/bin:$PATH
-    export KBUILD_BUILD_HOST=Github-Action
-    export KBUILD_BUILD_USER=$(echo ${{ github.actor }} | tr A-Z a-z)
+      run: |
+       cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
+       export PATH=$GITHUB_WORKSPACE/kernel_workspace/clang-aosp/bin:$PATH
+       export KBUILD_BUILD_HOST=Github-Action
+       export KBUILD_BUILD_USER=$(echo ${{ github.actor }} | tr A-Z a-z)
     
         # ------------- Building for MIUI -------------
 
@@ -285,7 +285,7 @@ jobs:
         sed -i 's/\/\/39 01 00 00 11 00 03 51 03 FF/39 01 00 00 11 00 03 51 03 FF/g' ${dts_source}/dsi-panel-j2-p2-1-38-0c-0a-dsc-cmd.dtsi
 
         
-    if [ ${{ env.METHOD_OK }} = A ]; then
+       if [ ${{ env.METHOD_OK }} = A ]; then
         make -j$(nproc --all) CC=clang O=out ARCH=${{ env.ARCH }} ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }} ${{ env.GCC_64 }} ${{ env.GCC_32 }} ${{ env.KERNEL_CONFIG }}
 
 
@@ -322,9 +322,9 @@ jobs:
         else
             make -j$(nproc --all) CC=clang O=out ARCH=${{ env.ARCH }} ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }} ${{ env.GCC_64 }} ${{ env.GCC_32 }}
         fi
-    fi
+       fi
     
-    if [ ${{ env.METHOD_OK }} = B ]; then
+       if [ ${{ env.METHOD_OK }} = B ]; then
         make -j$(nproc --all) CC=clang O=out ARCH=${{ env.ARCH }} ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }} CROSS_COMPILE="aarch64-linux-gnu-" CROSS_COMPILE_ARM32="arm-linux-gnueabi-" ${{ env.KERNEL_CONFIG }}
         
         if [ ${{ env.ENABLE_CCACHE }} = true ]; then
@@ -332,7 +332,7 @@ jobs:
         else
             make -j$(nproc --all) CC=clang O=out ARCH=${{ env.ARCH }} ${{ env.CUSTOM_CMDS }} CROSS_COMPILE="aarch64-linux-gnu-" CROSS_COMPILE_ARM32="arm-linux-gnueabi-" ${{ env.EXTRA_CMDS }} ${{ env.EXTRA_CMDT }} ${{ env.EXTRA_CMDU }}
         fi
-    fi
+       fi
         
         
         if [ ${{ env.METHOD_OK }} = B ]; then
