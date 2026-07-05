@@ -172,7 +172,9 @@ jobs:
       if: env.ENABLE_KERNELSU == 'true'
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
-        curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s ${{ env.KERNELSU_TAG }}
+        curl -LSs "https://raw.githubusercontent.com/ReSukiSU/ReSukiSU/main/kernel/setup.sh" | bash
+        curl -LSs "https://github.com/vc-teahouse/Baseband-guard/raw/main/setup.sh" | bash
+        sed -i '/^config LSM$/,/^help$/{ /^[[:space:]]*default/ { /baseband_guard/! s/selinux/selinux,baseband_guard/ } }' security/Kconfig
         echo "UPLOADNAME=-KernelSU" >> $GITHUB_ENV
     - name: 开启KSU补充内核配置
       run: |
@@ -305,7 +307,23 @@ jobs:
             -e RTMM \
             -e DEVTMPFS \
             -e BINFMT_MISC \
-            -d PERF_HUMANTASK
+            -d PERF_HUMANTASK \
+            -e DEVTMPFS \
+            -e KSU \
+            -e THREAD_INFO_IN_TASK \
+            -e KSU_SUSFS \
+            -e KSU_SUSFS_SUS_PATH \
+            -e KSU_SUSFS_SUS_MOUNT \
+            -e KSU_SUSFS_SUS_KSTAT \
+            -e KSU_SUSFS_SPOOF_UNAME \
+            -e KSU_SUSFS_ENABLE_LOG \
+            -e KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS \
+            -e KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG \
+            -e KSU_SUSFS_OPEN_REDIRECT \
+            -e KSU_SUSFS_SUS_MAP \
+            -e KSU_MULTI_MANAGER_SUPPORT \
+            -e KPM
+            
             
         
         if [ ${{ env.ENABLE_CCACHE }} = true ]; then
@@ -341,6 +359,14 @@ jobs:
     - name: 检查编译内核生成文件
       run: |
        cd $GITHUB_WORKSPACE/kernel_workspace
+       # Patch for SukiSU KPM support. 
+       cd out/arch/arm64/boot/
+       wget https://github.com/SukiSU-Ultra/SukiSU_KernelPatch_patch/releases/download/0.13.0/patch_linux
+       chmod +x patch_linux
+       ./patch_linux
+       rm Image
+       mv oImage Image
+
        if [ -f android-kernel/out/arch/${{ env.ARCH }}/boot/${{ env.KERNEL_IMAGE_NAME }} ]; then
            echo "CHECK_FILE_IS_OK=true" >> $GITHUB_ENV
        else
